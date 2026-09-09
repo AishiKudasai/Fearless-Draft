@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="stylesheet" href="style.css">
+<title>MLBB Fearless Draft</title>
+</head>
+
+<body>
+
+<!-- =====================================================
+     SETUP SCREEN
+===================================================== -->
+
+<div id="setupScreen">
+
+    <div class="setup-card">
+
+        <div class="setup-title">
+            FEARLESS DRAFT
+        </div>
+
+        <div class="setup-sub">
+            MLBB TOURNAMENT DRAFT SYSTEM
+        </div>
+
+        <div class="setup-grid">
+
+            <div class="setup-team blue">
+
+                <h3>BLUE TEAM</h3>
+
+                <input
+                    id="teamA"
+                    class="setup-input"
+                    value="BLUE TEAM"
+                    placeholder="Team name">
+
+                <input class="setup-input player-input-a"
+                       value="Player 1">
+
+                <input class="setup-input player-input-a"
+                       value="Player 2">
+
+                <input class="setup-input player-input-a"
+                       value="Player 3">
+
+                <input class="setup-input player-input-a"
+                       value="Player 4">
+
+                <input class="setup-input player-input-a"
+                       value="Player 5">
+
+            </div>
+
+            <div class="setup-team red">
+
+                <h3>RED TEAM</h3>
+
+                <input
+                    id="teamB"
+                    class="setup-input"
+                    value="RED TEAM"
+                    placeholder="Team name">
+
+                <input class="setup-input player-input-b"
+                       value="Player 1">
+
+                <input class="setup-input player-input-b"
+                       value="Player 2">
+
+                <input class="setup-input player-input-b"
+                       value="Player 3">
+
+                <input class="setup-input player-input-b"
+                       value="Player 4">
+
+                <input class="setup-input player-input-b"
+                       value="Player 5">
+
+            </div>
+
+        </div>
+
+        <div class="setup-options">
+
+            <div class="option-box">
+                <label>SERIES FORMAT</label>
+
+                <select id="format">
+                    <option value="bo3">BEST OF 3</option>
+                    <option value="bo5">BEST OF 5</option>
+                    <option value="bo7">BEST OF 7</option>
+                </select>
+            </div>
+
+            <div class="option-box">
+                <label>PICK TIMER</label>
+
+                <input
+                    id="timerSeconds"
+                    type="number"
+                    min="5"
+                    max="180"
+                    value="30">
+            </div>
+
+        </div>
+
+        <button class="start-btn" onclick="startDraft()">
+            START FEARLESS DRAFT
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     APPLICATION
+===================================================== -->
+
+<div id="app" class="hidden">
+
+<!-- TOP BAR -->
+
+<header class="topbar">
+
+    <div class="team-score blue">
+        <span id="displayTeamA">BLUE TEAM</span>
+        <span class="score-number" id="scoreA">0</span>
+    </div>
+
+    <div class="center-score">
+
+        <div id="timer" class="timer">
+            30
+        </div>
+
+    </div>
+
+    <div class="team-score red">
+        <span class="score-number" id="scoreB">0</span>
+        <span id="displayTeamB">RED TEAM</span>
+    </div>
+
+</header>
+
+    <!-- MAIN -->
+
+    <section class="main">
+
+        <!-- BLUE -->
+
+        <aside class="side-panel blue">
+
+            <div class="side-title blue">
+                <span id="sideTeamA">BLUE TEAM</span>
+            </div>
+
+            <div id="playersA" class="players"></div>
+
+            <div class="current-picks">
+
+                <div class="current-title">
+                    FEARLESS LOCKED
+                </div>
+
+                <div id="currentIconsA" class="current-icons"></div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- CENTER -->
+
+        <main class="center">
+
+            <div
+                id="centerBackdrop"
+                class="center-backdrop">
+            </div>
+
+            <div class="center-content">
+
+                <!-- TURN -->
+
+                <div class="turnbar">
+
+                    <div id="turnA"
+                         class="turn-team blue">
+                        BLUE
+                    </div>
+
+                    <div>
+                        PLAYER PICK
+                    </div>
+
+                    <div id="turnB"
+                         class="turn-team red">
+                        RED TEAM
+                    </div>
+
+                </div>
+
+
+                <!-- FEATURED -->
+
+                <div class="featured">
+
+                    <div class="featured-art">
+
+                        <img
+                            id="featuredImage"
+                            alt="Selected Hero">
+
+                    </div>
+
+                    <div class="featured-info">
+
+                        <div class="featured-small">
+                            LAST PICK
+                        </div>
+
+                        <div
+                            id="featuredName"
+                            class="featured-name">
+                            —
+                        </div>
+
+                        <div
+                            id="featuredStatus"
+                            class="featured-status">
+                            WAITING FOR PICK
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTER -->
+
+                <div class="filters">
+
+                    <input
+                        id="search"
+                        type="text"
+                        placeholder="SEARCH HERO...">
+
+                    <select id="roleFilter">
+
+                        <option value="ALL">
+                            ALL
+                        </option>
+
+                        <option value="TANK">
+                            TANK
+                        </option>
+
+                        <option value="FIGHTER">
+                            FIGHTER
+                        </option>
+
+                        <option value="ASSASSIN">
+                            ASSASSIN
+                        </option>
+
+                        <option value="MAGE">
+                            MAGE
+                        </option>
+
+                        <option value="MARKSMAN">
+                            MARKSMAN
+                        </option>
+
+                        <option value="SUPPORT">
+                            SUPPORT
+                        </option>
+
+                    </select>
+
+                    <select id="laneFilter">
+
+                        <option value="ALL">
+                            ALL
+                        </option>
+
+                        <option value="EXP">
+                            EXP
+                        </option>
+
+                        <option value="MID">
+                            MID
+                        </option>
+
+                        <option value="GOLD">
+                            GOLD
+                        </option>
+
+                        <option value="JUNGLE">
+                            JUNGLE
+                        </option>
+
+                        <option value="ROAM">
+                            ROAM
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- HERO AREA -->
+
+                <div class="hero-area">
+
+
+                    <div class="available-title">
+
+                        <span>
+                            AVAILABLE HEROES
+                        </span>
+
+                        <span
+                            id="availableCount"
+                            style="margin-left:auto">
+                            0
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="heroGrid"
+                        class="hero-grid">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- RED -->
+
+        <aside class="side-panel red">
+
+            <div class="side-title red">
+                <span id="sideTeamB">RED TEAM</span>
+            </div>
+
+            <div id="playersB" class="players"></div>
+
+            <div class="current-picks">
+
+                <div class="current-title">
+                     FEARLESS LOCKED
+                </div>
+
+            <div id="currentIconsB" class="current-icons"></div>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+
+    <!-- BOTTOM -->
+
+    <footer class="bottom">
+
+        <button
+            id="pauseBtn"
+            class="control-btn"
+            onclick="toggleTimer()">
+            PAUSE
+        </button>
+
+        <button
+            class="control-btn"
+            onclick="addTime(10)">
+            +10
+        </button>
+
+        <button
+            class="control-btn danger"
+            onclick="undoLastPick()">
+            UNDO
+        </button>
+
+        <div class="progress-wrap">
+
+            <div
+                id="progressText"
+                class="progress-text">
+                DRAFT 0 / 10
+            </div>
+
+            <div class="progress-bar">
+
+                <div
+                    id="progressFill"
+                    class="progress-fill">
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="control-btn"
+            onclick="resetDraft()">
+            RESET
+        </button>
+
+    </footer>
+
+</div>
+
+
+<div id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
