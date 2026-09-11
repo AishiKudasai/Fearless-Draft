@@ -1200,15 +1200,6 @@ function renderFeatured() {
 
     if (!state.selectedHero) {
 
-        /* Hide 3D model */
-
-        if (model) {
-
-            model.removeAttribute('src');
-            model.classList.remove('active');
-
-        }
-
 
         /* Hide portrait */
 
@@ -1277,11 +1268,6 @@ if (img) {
     
 
     else {
-
-        /*
-           No 3D model for this hero.
-           Use normal portrait.
-        */
 
         if (!state.selectedHero) {
 
