@@ -221,7 +221,9 @@ const local = {
     history: [],
     future: [],
     searchQuery: '',
+    filterMode: 'role',   // 'role' | 'lane' — which filter row is active in the hero grid
     roleFilter: 'ALL',
+    laneFilter: 'ALL',
     muted: false,
     historyBrowseIndex: null,   // which past game the Match History panel is focused on
     timerInterval: null
@@ -803,7 +805,7 @@ function playSound(kind){
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.connect(g); g.connect(audioCtx.destination);
-        const freqs = { pick: 520, tick: 880, expire: 220, complete: 660 };
+        const freqs = { pick: 520, tick: 880, expire: 220, complete: 660, lock_hero: 740 };
         o.frequency.value = freqs[kind] || 440;
         g.gain.value = 0.06;
         o.start();
@@ -1045,7 +1047,8 @@ function renderFeatured(){
     const name = document.getElementById('featuredName');
     const status = document.getElementById('featuredStatus');
     const backdrop = document.getElementById('centerBackdrop');
-    const featuredArt = document.querySelector('.featured-art');
+    const cardStage = document.getElementById('cardStage');
+    const heroCard = cardStage ? cardStage.querySelector('.stage-hero-card') : null;
 
     if(!state.selectedHero){
         if(img){ img.removeAttribute('src'); img.style.display = 'none'; }
@@ -1059,9 +1062,14 @@ function renderFeatured(){
 
     if(img){
         loadFeaturedImage(img, hero);
-        img.classList.remove('pop-in');
-        void img.offsetWidth;
-        img.classList.add('pop-in');
+    }
+
+    // Restart the card-pop animation on the physical card slab, not the <img>,
+    // so the frame / glass / glow all pop together as one object.
+    if(heroCard){
+        heroCard.classList.remove('pop-in');
+        void heroCard.offsetWidth;
+        heroCard.classList.add('pop-in');
     }
 
     let playerName = 'PLAYER', teamName = '', teamClass = '';
@@ -1071,9 +1079,21 @@ function renderFeatured(){
     if(indexA !== -1){ playerName = allPlayers('a')[indexA]?.name || `PLAYER ${indexA+1}`; teamName = state.teams.a.name; teamClass = 'blue'; }
     else if(indexB !== -1){ playerName = allPlayers('b')[indexB]?.name || `PLAYER ${indexB+1}`; teamName = state.teams.b.name; teamClass = 'red'; }
 
-    if(featuredArt){
-        featuredArt.classList.remove('team-blue','team-red');
-        if(teamClass) featuredArt.classList.add(`team-${teamClass}`);
+    // Drive the whole 3D stage's accent theme (halo, ring, pedestal trim,
+    // card frame) from a single class on #cardStage.
+    if(cardStage){
+        cardStage.classList.remove('active-team-blue','active-team-red');
+        if(teamClass) cardStage.classList.add(`active-team-${teamClass}`);
+    }
+
+    // Tag the info overlay with the same team class as #cardStage, so the
+    // hero title's glow reflects who actually picked this hero — not
+    // whichever team's turn it currently is (those can differ once the
+    // turn has advanced past this pick).
+    const infoOverlay = document.querySelector('.hero-info-overlay');
+    if(infoOverlay){
+        infoOverlay.classList.remove('team-blue','team-red');
+        if(teamClass) infoOverlay.classList.add(`team-${teamClass}`);
     }
 
     if(name){
@@ -1085,9 +1105,9 @@ function renderFeatured(){
 
     if(status){
         status.innerHTML = `
-            <span class="featured-team ${teamClass}">${escapeHtml(teamName)}</span>
-            <span class="featured-role">${escapeHtml(getRole(hero))}</span>
-            <span class="featured-lane">${escapeHtml(getLane(hero))}</span>
+            <span class="team-badge ${teamClass}">${escapeHtml(teamName)}</span>
+            <span class="role-badge">${escapeHtml(getRole(hero))}</span>
+            <span class="lane-badge">${escapeHtml(getLane(hero))}</span>
         `;
     }
 
@@ -1098,6 +1118,62 @@ function renderFeatured(){
         test.onerror = ()=>{ backdrop.style.backgroundImage = `url("${heroAsset('portrait',hero)}")`; backdrop.style.opacity = '.20'; };
         test.src = splashUrl;
     }
+
+    // Broadcast audio hook: fires every time a hero is (re)rendered into
+    // the featured stage, independent of the "pick" SFX fired on selection.
+    playSound('lock_hero');
+}
+
+/* =========================================================================
+   3D CARD STAGE — mouse parallax / tilt micro-interaction
+   Tracks the cursor over #cardStage and tilts the floating .hero-card
+   toward it, so the "slab" reads as a physical object catching light,
+   independent of the pedestal and ring beneath it.
+========================================================================= */
+function wireCardStageTilt(){
+    const stage = document.getElementById('cardStage');
+    const card  = stage ? stage.querySelector('.stage-hero-card') : null;
+    if(!stage || !card) return;
+
+    const BASE_RX   = 8;   // resting rotateX, matches the CSS default tilt
+    const MAX_RX    = 14;  // extra tilt available toward/away from cursor
+    const MAX_RY    = 16;  // left/right tilt range
+    const LIFT_Z    = 30;  // resting elevation above the pedestal
+    const LIFT_Z_UP = 42;  // elevation while the cursor is over the stage
+
+    let raf = null;
+    let targetRX = BASE_RX, targetRY = 0, targetZ = LIFT_Z;
+    let curRX = BASE_RX, curRY = 0, curZ = LIFT_Z;
+
+    function apply(){
+        // Light easing toward the target each frame for a smooth, physical feel.
+        curRX += (targetRX - curRX) * 0.18;
+        curRY += (targetRY - curRY) * 0.18;
+        curZ  += (targetZ  - curZ)  * 0.18;
+        card.style.transform = `rotateX(${curRX.toFixed(2)}deg) rotateY(${curRY.toFixed(2)}deg) translate(-50%, -50%) translateZ(${curZ.toFixed(1)}px)`;
+
+        const settled = Math.abs(targetRX-curRX) < 0.03 && Math.abs(targetRY-curRY) < 0.03 && Math.abs(targetZ-curZ) < 0.05;
+        if(settled){ raf = null; return; } // stop the loop once it converges, don't spin forever
+        raf = requestAnimationFrame(apply);
+    }
+
+    function handleMove(e){
+        const rect = stage.getBoundingClientRect();
+        const nx = ((e.clientX - rect.left) / rect.width)  * 2 - 1; // -1 .. 1
+        const ny = ((e.clientY - rect.top)  / rect.height) * 2 - 1; // -1 .. 1
+        targetRY = Math.max(-1, Math.min(1, nx)) * MAX_RY;
+        targetRX = BASE_RX - Math.max(-1, Math.min(1, ny)) * MAX_RX;
+        targetZ  = LIFT_Z_UP;
+        if(!raf) raf = requestAnimationFrame(apply);
+    }
+
+    function handleLeave(){
+        targetRX = BASE_RX; targetRY = 0; targetZ = LIFT_Z;
+        if(!raf) raf = requestAnimationFrame(apply);
+    }
+
+    stage.addEventListener('mousemove', handleMove);
+    stage.addEventListener('mouseleave', handleLeave);
 }
 
 function renderFearlessPanels(){
@@ -1217,7 +1293,11 @@ function renderHeroGrid(){
 
     const heroesToShow = HEROES.filter(hero=>{
         if(local.searchQuery && !hero.toLowerCase().includes(local.searchQuery)) return false;
-        if(local.roleFilter !== 'ALL' && getRole(hero) !== local.roleFilter) return false;
+        if(local.filterMode === 'lane'){
+            if(local.laneFilter !== 'ALL' && getLane(hero) !== local.laneFilter) return false;
+        } else {
+            if(local.roleFilter !== 'ALL' && getRole(hero) !== local.roleFilter) return false;
+        }
         return true;
     });
 
@@ -1233,6 +1313,7 @@ function renderHeroGrid(){
         card.type = 'button';
         card.className = 'hero-card';
         card.dataset.role = getRole(hero);
+        card.dataset.lane = getLane(hero);
         if(locked) card.classList.add('hero-locked');
         if(pickedThisGame) card.classList.add('hero-picked');
         if(fearlessLocked) card.classList.add('hero-fearless');
@@ -1456,6 +1537,7 @@ function initOperator(){
     wireControls();
     wireFilters();
     wireKeyboard();
+    wireCardStageTilt();
     renderAll();
     persistAndSync();
 }
@@ -1511,10 +1593,28 @@ function wireFilters(){
         renderHeroGrid();
     });
 
-    document.querySelectorAll('.role-btn').forEach(btn=>{
+    document.querySelectorAll('#roleFilterBar .role-btn').forEach(btn=>{
         btn.addEventListener('click', ()=>{
             local.roleFilter = btn.dataset.role;
-            document.querySelectorAll('.role-btn').forEach(b=> b.classList.toggle('active', b === btn));
+            document.querySelectorAll('#roleFilterBar .role-btn').forEach(b=> b.classList.toggle('active', b === btn));
+            renderHeroGrid();
+        });
+    });
+
+    document.querySelectorAll('#laneFilterBar .role-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            local.laneFilter = btn.dataset.lane;
+            document.querySelectorAll('#laneFilterBar .role-btn').forEach(b=> b.classList.toggle('active', b === btn));
+            renderHeroGrid();
+        });
+    });
+
+    document.querySelectorAll('#filterModeToggle .mode-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            local.filterMode = btn.dataset.mode;
+            document.querySelectorAll('#filterModeToggle .mode-btn').forEach(b=> b.classList.toggle('active', b === btn));
+            document.getElementById('roleFilterBar')?.classList.toggle('hidden', local.filterMode !== 'role');
+            document.getElementById('laneFilterBar')?.classList.toggle('hidden', local.filterMode !== 'lane');
             renderHeroGrid();
         });
     });
