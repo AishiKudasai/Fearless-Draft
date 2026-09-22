@@ -131,7 +131,7 @@ function escapeHtml(text){
 const HEROES = [
 "Miya","Balmond","Saber","Alice","Nana","Tigreal","Alucard","Karina","Akai","Franco",
 "Bane","Bruno","Clint","Rafaela","Eudora","Zilong","Fanny","Layla","Minotaur","Lolita",
-"Hayabusa","Freya","Gord","Natalia","Kagura","Sun","Alpha","Ruby","Yi Sun-shin","Moskov",
+"Hayabusa","Freya","Gord","Natalia","Kagura","Sun","Alpha","Ruby","Yi Sun-Shin","Moskov",
 "Johnson","Cyclops","Estes","Hilda","Aurora","Lapu-Lapu","Vexana","Roger","Karrie","Gatotkaca",
 "Irithel","Harley","Grock","Argus","Odette","Lancelot","Diggie","Hylos","Zhask","Helcurt",
 "Pharsa","Lesley","Jawhead","Angela","Gusion","Valir","Martis","Uranus","Hanabi","Chang'e",
@@ -146,30 +146,124 @@ const HEROES = [
 ];
 
 const ROLE_MAP = {
-"TANK":["Tigreal","Akai","Franco","Minotaur","Lolita","Johnson","Gatotkaca","Grock","Hylos","Khufra","Belerick","Atlas","Gloo","Edith","Chip","Baxia"],
-"FIGHTER":["Balmond","Alucard","Zilong","Freya","Sun","Alpha","Ruby","Roger","Lapu-Lapu","Argus","Jawhead","Martis","Uranus","Aldous","Leomord","Hanzo","Thamuz","Minsitthar","Badang","Guinevere","Esmeralda","Terizla","X.Borg","Dyrroth","Silvanna","Yu Zhong","Benedetta","Khaleed","Barats","Paquito","Phoveus","Aulus","Yin","Julian","Fredrinn","Joy","Arlott","Cici","Lukas","Obsidia","Chou","Masha"],
-"ASSASSIN":["Saber","Karina","Fanny","Hayabusa","Natalia","Lancelot","Gusion","Helcurt","Selena","Ling","Aamon","Joy","Arlott","Nolan","Suyou","Hanzo","Hirara","Sora"],
-"MAGE":["Alice","Nana","Eudora","Gord","Kagura","Cyclops","Aurora","Vexana","Harley","Odette","Zhask","Pharsa","Valir","Chang'e","Vale","Lunox","Kadita","Yve","Luo Yi","Cecilion","Xavier","Novaria","Zhuxin","Valentina","Carmilla","Zetian","Lylia"],
-"MARKSMAN":["Miya","Bruno","Clint","Layla","Moskov","Karrie","Irithel","Lesley","Claude","Kimmy","Granger","Wanwan","Beatrix","Natan","Melissa","Ixia","Brody","Hanabi","Popol and Kupa"],
-"SUPPORT":["Rafaela","Estes","Diggie","Angela","Kaja","Mathilda","Floryn","Carmilla","Faramis"]
+  "TANK": [
+    "Akai","Alice","Atlas","Barats","Baxia","Belerick","Carmilla","Chip",
+    "Edith","Esmeralda","Franco","Fredrinn","Gatotkaca","Gloo","Grock",
+    "Hilda","Hylos","Johnson","Khufra","Lolita","Masha","Minotaur",
+    "Terizla","Tigreal","Uranus"
+  ],
+
+  "FIGHTER": [
+    "Aldous","Alpha","Alucard","Argus","Arlott","Aulus","Badang","Balmond",
+    "Bane","Barats","Cici","Chou","Dyrroth","Fredrinn","Freya","Gatotkaca",
+    "Grock","Guinevere","Hilda","Jawhead","Julian","Kalea","Khaleed",
+    "Lapu-Lapu","Leomord","Lukas","Martis","Masha","Minsitthar","Paquito",
+    "Phoveus","Roger","Ruby","Silvanna","Sora","Sun","Suyou","Terizla",
+    "Thamuz","X.Borg","Yin","Yu Zhong","Zilong"
+  ],
+
+  "ASSASSIN": [
+    "Aamon","Alucard","Arlott","Benedetta","Fanny","Gusion","Hanzo","Harley",
+    "Hayabusa","Helcurt","Hirara","Joy","Julian","Kadita","Karina","Lancelot",
+    "Lesley","Ling","Mathilda","Natalia","Nolan","Paquito","Saber","Selena",
+    "Sora","Suyou","Yi Sun-Shin","Zilong"
+  ],
+
+  "MAGE": [
+    "Alice","Aurora","Bane","Cecilion","Chang'e","Cyclops","Esmeralda",
+    "Eudora","Faramis","Gord","Harith","Harley","Kadita","Kagura","Kimmy",
+    "Lunox","Luo Yi","Lylia","Nana","Novaria","Odette","Pharsa","Selena",
+    "Vale","Valir","Valentina","Vexana","Xavier","Yve","Zetian","Zhask",
+    "Zhuxin"
+  ],
+
+  "MARKSMAN": [
+    "Beatrix","Brody","Bruno","Claude","Clint","Edith","Granger","Hanabi",
+    "Irithel","Ixia","Karrie","Kimmy","Layla","Lesley","Melissa","Miya",
+    "Moskov","Natan","Obsidia","Popol and Kupa","Roger","Wanwan",
+    "Yi Sun-Shin"
+  ],
+
+  "SUPPORT": [
+  "Angela","Carmilla","Chip","Diggie","Estes","Faramis","Floryn",
+  "Johnson","Kaja","Kalea","Lolita","Marcel","Mathilda","Minotaur",
+  "Rafaela"
+]
 };
 
-function getRole(hero){
-    for(const role in ROLE_MAP){ if(ROLE_MAP[role].includes(hero)) return role; }
-    return "FIGHTER";
+
+function getRoles(hero) {
+    const roles = [];
+
+    for (const role in ROLE_MAP) {
+        if (ROLE_MAP[role].includes(hero)) {
+            roles.push(role);
+        }
+    }
+
+    return roles;
+}
+
+function hasRole(hero, role) {
+    return ROLE_MAP[role]?.includes(hero) || false;
 }
 
 const LANE_MAP = {
-EXP:["Balmond","Alucard","Zilong","Freya","Sun","Alpha","Ruby","Lapu-Lapu","Argus","Martis","Uranus","Aldous","Leomord","Thamuz","Minsitthar","Badang","Guinevere","Esmeralda","Terizla","X.Borg","Dyrroth","Silvanna","Yu Zhong","Benedetta","Khaleed","Barats","Paquito","Phoveus","Aulus","Yin","Julian","Fredrinn","Arlott","Cici","Lukas","Chou"],
-MID:["Alice","Nana","Eudora","Gord","Kagura","Cyclops","Aurora","Vexana","Harley","Odette","Zhask","Pharsa","Valir","Chang'e","Vale","Lunox","Kadita","Yve","Luo Yi","Cecilion","Xavier","Novaria","Valentina","Zhuxin","Zetian","Lylia"],
-GOLD:["Miya","Bruno","Clint","Layla","Moskov","Karrie","Irithel","Lesley","Claude","Kimmy","Granger","Wanwan","Beatrix","Natan","Melissa","Ixia","Brody","Hanabi","Popol and Kupa"],
-JUNGLE:["Saber","Karina","Fanny","Hayabusa","Lancelot","Gusion","Helcurt","Ling","Aamon","Nolan","Suyou","Julian","Roger","Balmond","Fredrinn","Barats","Joy","Baxia","Masha","Hirara","Sora"],
-ROAM:["Tigreal","Akai","Franco","Minotaur","Lolita","Johnson","Rafaela","Estes","Hilda","Gatotkaca","Grock","Hylos","Diggie","Khufra","Belerick","Angela","Kaja","Atlas","Carmilla","Mathilda","Gloo","Edith","Floryn","Chip","Faramis"]
+  EXP: [
+    "Aldous","Alice","Alpha","Alucard","Argus","Arlott","Badang","Balmond",
+    "Bane","Benedetta","Chou","Cici","Dyrroth","Edith","Esmeralda","Freya",
+    "Gatotkaca","Gloo","Guinevere","Hilda","Jawhead","Joy","Julian","Khaleed",
+    "Lapu-Lapu","Leomord","Lukas","Martis","Masha","Minsitthar","Paquito",
+    "Phoveus","Ruby","Silvanna","Sora","Sun","Suyou","Terizla","Thamuz",
+    "Uranus","X.Borg","Yin","Yu Zhong","Zilong"
+  ],
+
+  GOLD: [
+    "Beatrix","Brody","Bruno","Claude","Clint","Hanabi","Harith","Irithel",
+    "Ixia","Karrie","Kimmy","Layla","Lesley","Melissa","Miya","Moskov",
+    "Natan","Obsidia","Popol and Kupa","Roger","Wanwan"
+  ],
+
+  MID: [
+    "Alice","Aurora","Cecilion","Chang'e","Cyclops","Esmeralda","Eudora",
+    "Faramis","Gord","Harith","Harley","Julian","Kadita","Kagura","Kimmy",
+    "Lunox","Luo Yi","Lylia","Nana","Novaria","Odette","Pharsa","Selena",
+    "Vale","Valir","Valentina","Vexana","Xavier","Yve","Zetian","Zhask",
+    "Zhuxin"
+  ],
+
+  ROAM: [
+    "Akai","Angela","Atlas","Badang","Baxia","Belerick","Carmilla","Chip",
+    "Chou","Diggie","Edith","Estes","Faramis","Floryn","Franco","Gatotkaca",
+    "Gloo","Grock","Helcurt","Hilda","Hylos","Jawhead","Johnson","Kaja",
+    "Kalea","Khaleed","Khufra","Lolita","Marcel","Mathilda","Minotaur",
+    "Minsitthar","Natalia","Rafaela","Saber","Selena","Tigreal"
+  ],
+
+  JUNGLE: [
+    "Aamon","Akai","Alpha","Alucard","Aulus","Balmond","Bane","Barats",
+    "Baxia","Dyrroth","Fanny","Fredrinn","Freya","Granger","Gusion","Hanzo",
+    "Harley","Hayabusa","Helcurt","Hirara","Joy","Julian","Karina","Lancelot",
+    "Leomord","Ling","Lukas","Martis","Natalia","Nolan","Popol and Kupa",
+    "Roger","Saber","Sun","Suyou","Yi Sun-Shin","Yin"
+  ]
 };
 
-function getLane(hero){
-    for(const lane in LANE_MAP){ if(LANE_MAP[lane].includes(hero)) return lane; }
-    return "EXP";
+
+function getLanes(hero) {
+    const lanes = [];
+
+    for (const lane in LANE_MAP) {
+        if (LANE_MAP[lane].includes(hero)) {
+            lanes.push(lane);
+        }
+    }
+
+    return lanes;
+}
+
+function hasLane(hero, lane) {
+    return LANE_MAP[lane]?.includes(hero) || false;
 }
 
 const SKIP_TOKEN = '__SKIPPED__';
@@ -189,6 +283,11 @@ function defaultPlayers(prefix){
     return roles.map((role,i)=>({ name:`Player ${i+1}`, role }));
 }
 
+function emptyDraft(){
+    // picks* = locked into the 5 player slots.  bans* = MANUAL bans for this game only.
+    return { picksA:[], picksB:[], bansA:[], bansB:[], turnIndex:0 };
+}
+
 function createDefaultState(){
     return {
         version: 1,
@@ -203,13 +302,14 @@ function createDefaultState(){
         },
         format: 'bo3',
         maxGames: 3,
-        sequence: ['a','b','b','a','a','b','b','a','a','b'],
+        sequence: ['a','b','b','a','a','b','b','a','a','b'],   // PICK order only (bans are added by buildDraftFlow)
+        banCount: 5,                                             // manual bans per team: 0 | 3 | 5
         timerMax: 30,
         timer: { remaining: 30, running: false },
         score: { a:0, b:0 },
         currentGameIndex: 1,
-        games: [],                                   // completed games: {index,picksA,picksB,winner}
-        currentDraft: { picksA:[], picksB:[], turnIndex:0 },
+        games: [],                                   // completed games: {index,picksA,picksB,bansA,bansB,winner}
+        currentDraft: emptyDraft(),
         selectedHero: null,
         phase: 'setup'                                // setup | drafting | game_complete | match_complete
     };
@@ -320,7 +420,10 @@ function mergeDefaults(incoming){
         score: { ...base.score, ...(incoming.score||{}) },
         currentDraft: { ...base.currentDraft, ...(incoming.currentDraft||{}) },
         games: Array.isArray(incoming.games) ? incoming.games : [],
-        sequence: Array.isArray(incoming.sequence) ? incoming.sequence : base.sequence
+        sequence: Array.isArray(incoming.sequence) ? incoming.sequence : base.sequence,
+        // Matches saved before bans existed have no banCount -> keep them ban-free so
+        // their turnIndex (which only counted picks) still lines up.
+        banCount: [0,3,5].includes(Number(incoming.banCount)) ? Number(incoming.banCount) : 0
     };
 }
 
@@ -452,14 +555,87 @@ function computeFearlessLockedSet(){
     return set;
 }
 
+/* -------------------------------------------------------------------------
+   DRAFT FLOW — the exact MLBB tournament order.
+
+   5 bans : BAN 1  B R B R B R          (3 each, Blue first)
+            PICK 1 B R R B B R          (first 6 picks)
+            BAN 2  R B R B              (2 each, Red first — Red owns the next pick)
+            PICK 2 R B B R              (last 4 picks)
+   3 bans : BAN    B R B R B R  then all 10 picks
+   0 bans : picks only (old behaviour)
+
+   `state.currentDraft.turnIndex` walks this flow, not just the pick list.
+------------------------------------------------------------------------- */
+const BAN_PHASE_1_PER_TEAM = 3;
+const PICK_PHASE_1_LENGTH  = 6;
+
+/* Builds a team order of length 2*perTeamCount using the same "snake" turn
+ * shape as the pick sequence: a single turn, then paired turns, ending on a
+ * single turn (e.g. perTeamCount=5 -> a,b,b,a,a,b,b,a,a,b — exactly
+ * state.sequence). Bans now use this too, instead of plain alternation, so
+ * a ban round feels like a pick round: whoever is "up" gets to react to the
+ * last two bans before the turn passes back. */
+function buildSnakeTeamOrder(startTeam, perTeamCount){
+    if(perTeamCount <= 0) return [];
+    const otherTeam = startTeam === 'a' ? 'b' : 'a';
+    const groups = perTeamCount + 1;
+    const order = [];
+    for(let g = 0; g < groups; g++){
+        const size = (g === 0 || g === groups - 1) ? 1 : 2;
+        const team = (g % 2 === 0) ? startTeam : otherTeam;
+        for(let k = 0; k < size; k++) order.push(team);
+    }
+    return order;
+}
+
+function buildDraftFlow(banCount, pickSeq){
+    const flow = [];
+    const phase1Bans = Math.min(banCount, BAN_PHASE_1_PER_TEAM);
+    const phase2Bans = Math.max(0, banCount - BAN_PHASE_1_PER_TEAM);
+
+    buildSnakeTeamOrder('a', phase1Bans).forEach(team => flow.push({ type:'ban', team, phase:1 }));
+
+    const split = phase2Bans > 0 ? PICK_PHASE_1_LENGTH : pickSeq.length;
+    pickSeq.slice(0, split).forEach(team => flow.push({ type:'pick', team, phase:1 }));
+
+    if(phase2Bans > 0){
+        buildSnakeTeamOrder('b', phase2Bans).forEach(team => flow.push({ type:'ban', team, phase:2 }));
+        pickSeq.slice(split).forEach(team => flow.push({ type:'pick', team, phase:2 }));
+    }
+    return flow;
+}
+
+function getFlow(){ return buildDraftFlow(state.banCount || 0, state.sequence); }
+function currentStep(){ return getFlow()[state.currentDraft.turnIndex] || null; }
+
+/* Manual bans of the CURRENT game only. They never carry into the next game —
+   only picks do (that's the fearless lock). */
+function computeBannedSet(){
+    const set = new Set();
+    (state.currentDraft.bansA||[]).forEach(h=>{ if(h && h!==SKIP_TOKEN) set.add(h); });
+    (state.currentDraft.bansB||[]).forEach(h=>{ if(h && h!==SKIP_TOKEN) set.add(h); });
+    return set;
+}
+
+function isHeroBanned(hero){ return computeBannedSet().has(hero); }
+
 function isHeroLocked(hero){
     return computeFearlessLockedSet().has(hero)
         || state.currentDraft.picksA.includes(hero)
-        || state.currentDraft.picksB.includes(hero);
+        || state.currentDraft.picksB.includes(hero)
+        || isHeroBanned(hero);
+}
+
+function heroUnavailableReason(hero){
+    if(computeFearlessLockedSet().has(hero)) return `${hero} is FEARLESS LOCKED`;
+    if(isHeroBanned(hero))                   return `${hero} is BANNED`;
+    return `${hero} is already picked`;
 }
 
 function currentTurnTeam(){
-    return state.sequence[state.currentDraft.turnIndex] || null;
+    const step = currentStep();
+    return step ? step.team : null;
 }
 
 function allPlayers(team){
@@ -537,6 +713,7 @@ function beginMatch(setupData){
     state.format   = setupData.format;
     state.maxGames = setupData.maxGames;
     state.timerMax = setupData.timerMax;
+    state.banCount = [0,3,5].includes(setupData.banCount) ? setupData.banCount : 5;
     state.timer    = { remaining: setupData.timerMax, running:false };
     state.phase    = 'drafting';
 
@@ -561,26 +738,38 @@ function backToSetup(){
     document.getElementById('app')?.classList.add('hidden');
 }
 
+function draftBucket(step){
+    const d = state.currentDraft;
+    if(step.type === 'ban') return step.team === 'a' ? d.bansA : d.bansB;
+    return step.team === 'a' ? d.picksA : d.picksB;
+}
+
+/* One entry point for the grid click / API: the current step decides whether
+   the hero is BANNED or PICKED. */
 function pickHero(hero){
     if(VIEW !== 'operator') return;
     if(state.phase !== 'drafting') return;
-    if(isHeroLocked(hero)){ showToast(`${hero} is unavailable`); return; }
+    if(isHeroLocked(hero)){ showToast(heroUnavailableReason(hero)); return; }
 
-    const turn = currentTurnTeam();
-    if(!turn) return;
+    const step = currentStep();
+    if(!step) return;
 
-    const bucket = turn === 'a' ? state.currentDraft.picksA : state.currentDraft.picksB;
-    if(bucket.length >= 5){ showToast('TEAM HAS COMPLETED ITS PICKS'); return; }
+    const bucket = draftBucket(step);
+    const limit  = step.type === 'ban' ? state.banCount : 5;
+    if(bucket.length >= limit){
+        showToast(step.type === 'ban' ? 'TEAM HAS USED ALL BANS' : 'TEAM HAS COMPLETED ITS PICKS');
+        return;
+    }
 
     pushHistory();
     bucket.push(hero);
     state.selectedHero = hero;
     state.currentDraft.turnIndex++;
-    playSound('pick');
+    playSound(step.type === 'ban' ? 'ban' : 'pick');
     resetTimer();
     renderAll();
 
-    if(state.currentDraft.turnIndex >= state.sequence.length){
+    if(state.currentDraft.turnIndex >= getFlow().length){
         setTimeout(finishDraft, 450);
     }
     persistAndSync();
@@ -588,19 +777,21 @@ function pickHero(hero){
 
 function skipTurn(){
     if(VIEW !== 'operator' || state.phase !== 'drafting') return;
-    const turn = currentTurnTeam();
-    if(!turn) return;
-    const bucket = turn === 'a' ? state.currentDraft.picksA : state.currentDraft.picksB;
-    if(bucket.length >= 5) return;
+    const step = currentStep();
+    if(!step) return;
+
+    const bucket = draftBucket(step);
+    const limit  = step.type === 'ban' ? state.banCount : 5;
+    if(bucket.length >= limit) return;
 
     pushHistory();
-    bucket.push(SKIP_TOKEN);
+    bucket.push(SKIP_TOKEN);          // a skipped ban = "no ban"
     state.selectedHero = null;
     state.currentDraft.turnIndex++;
     resetTimer();
     renderAll();
 
-    if(state.currentDraft.turnIndex >= state.sequence.length){
+    if(state.currentDraft.turnIndex >= getFlow().length){
         setTimeout(finishDraft, 450);
     }
     persistAndSync();
@@ -615,6 +806,8 @@ function finishDraft(){
         index: state.currentGameIndex,
         picksA: [...state.currentDraft.picksA],
         picksB: [...state.currentDraft.picksB],
+        bansA:  [...state.currentDraft.bansA],
+        bansB:  [...state.currentDraft.bansB],
         winner: null
     });
 
@@ -646,7 +839,7 @@ function declareWinner(team){
 
 function startNextGame(){
     state.currentGameIndex++;
-    state.currentDraft = { picksA:[], picksB:[], turnIndex:0 };
+    state.currentDraft = emptyDraft();
     state.selectedHero = null;
     state.phase = 'drafting';
     resetTimer();
@@ -657,7 +850,7 @@ function resetCurrentDraft(){
     if(VIEW !== 'operator' || state.phase !== 'drafting') return;
     if(!confirm('Reset the current draft? All picks in this game will be cleared.')) return;
     pushHistory();
-    state.currentDraft = { picksA:[], picksB:[], turnIndex:0 };
+    state.currentDraft = emptyDraft();
     state.selectedHero = null;
     resetTimer();
     renderAll();
@@ -671,7 +864,7 @@ function resetEntireMatch(){
     state.score = { a:0, b:0 };
     state.games = [];
     state.currentGameIndex = 1;
-    state.currentDraft = { picksA:[], picksB:[], turnIndex:0 };
+    state.currentDraft = emptyDraft();
     state.selectedHero = null;
     state.phase = 'drafting';
     resetTimer();
@@ -681,11 +874,30 @@ function resetEntireMatch(){
 
 function swapSides(){
     if(VIEW !== 'operator') return;
-    if(!confirm('Swap Blue and Red team identities? Names, logos, players and score will switch sides.')) return;
+    if(!confirm('Swap Blue and Red sides? Team names, logos, players, score, current picks/bans, and completed match history will all switch sides.')) return;
     pushHistory();
+
     const a = state.teams.a, b = state.teams.b;
     state.teams.a = b; state.teams.b = a;
+
     const sa = state.score.a; state.score.a = state.score.b; state.score.b = sa;
+
+    const d = state.currentDraft;
+    const picksA = d.picksA, bansA = d.bansA;
+    d.picksA = d.picksB; d.picksB = picksA;
+    d.bansA  = d.bansB;  d.bansB  = bansA;
+
+    // Completed games are keyed by side (picksA/picksB), so fearless locks and
+    // match history must swap too — otherwise past picks/bans stay attached to
+    // the physical side instead of following the team.
+    state.games.forEach(game=>{
+        const gPicksA = game.picksA, gBansA = game.bansA;
+        game.picksA = game.picksB; game.picksB = gPicksA;
+        game.bansA  = game.bansB;  game.bansB  = gBansA;
+        if(game.winner === 'a') game.winner = 'b';
+        else if(game.winner === 'b') game.winner = 'a';
+    });
+
     renderAll();
     persistAndSync();
     showToast('SIDES SWAPPED');
@@ -805,7 +1017,7 @@ function playSound(kind){
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.connect(g); g.connect(audioCtx.destination);
-        const freqs = { pick: 520, tick: 880, expire: 220, complete: 660, lock_hero: 740 };
+        const freqs = { pick: 520, tick: 880, expire: 220, complete: 660, lock_hero: 740, ban: 300 };
         o.frequency.value = freqs[kind] || 440;
         g.gain.value = 0.06;
         o.start();
@@ -894,6 +1106,8 @@ function renderAll(){
     renderFeatured();
     renderTurn();
     renderFearlessPanels();
+    renderBans();
+    renderPhaseTrack();
     if(document.getElementById('pickHistoryList')) renderPickHistory();
     renderTimer();
     renderProgress();
@@ -1018,28 +1232,131 @@ function clearPlayer(team, index){
 }
 
 function renderPlayerHeroes(){
-    for(let i=0;i<5;i++){ clearPlayer('a',i); clearPlayer('b',i); }
 
-    state.currentDraft.picksA.forEach((hero,i)=>{ if(i<5) setPlayerHero('a', i, hero); });
-    state.currentDraft.picksB.forEach((hero,i)=>{ if(i<5) setPlayerHero('b', i, hero); });
+    // =========================================================
+    // CLEAR PLAYER DISPLAY
+    // =========================================================
 
-    document.querySelectorAll('.player-slot').forEach(x=>x.classList.remove('active'));
+    for(let i = 0; i < 5; i++){
+        clearPlayer('a', i);
+        clearPlayer('b', i);
+    }
 
-    if(state.phase === 'drafting'){
-        const turn = currentTurnTeam();
-        if(turn){
-            const pickNumber = turn === 'a' ? state.currentDraft.picksA.length : state.currentDraft.picksB.length;
-            document.getElementById(`${turn}-player-slot-${pickNumber}`)?.classList.add('active');
+
+    // =========================================================
+    // RENDER BLUE PICKS
+    // =========================================================
+
+    state.currentDraft.picksA.forEach((hero, i)=>{
+        if(i < 5){
+            setPlayerHero('a', i, hero);
+        }
+    });
+
+
+    // =========================================================
+    // RENDER RED PICKS
+    // =========================================================
+
+    state.currentDraft.picksB.forEach((hero, i)=>{
+        if(i < 5){
+            setPlayerHero('b', i, hero);
+        }
+    });
+
+
+    // =========================================================
+    // REMOVE ONLY ACTIVE STATE
+    //
+    // IMPORTANT:
+    // .picked is NOT removed.
+    // Therefore completed players keep their animation.
+    // =========================================================
+
+    document.querySelectorAll('.player-slot').forEach(slot=>{
+        slot.classList.remove('active');
+    });
+
+
+    // =========================================================
+    // NOT CURRENTLY DRAFTING
+    // =========================================================
+
+    if(state.phase !== 'drafting') return;
+
+
+    const flow = getFlow();
+    const turnIndex = state.currentDraft.turnIndex;
+
+    if(turnIndex >= flow.length) return;
+
+    const step = flow[turnIndex];
+
+    // During a BAN step no player slot is "on the clock" — the ban slot pulses instead.
+    if(!step || step.type !== 'pick') return;
+
+    const turn = step.team;
+
+
+    // =========================================================
+    // FIND START / END OF THE SAME-TEAM PICK GROUP
+    //
+    // Picks: A B B A A B | (ban phase 2) | B A A B
+    //
+    // Consecutive PICK steps of the same team light up together
+    // (Red 2+3, Blue 2+3). A ban phase in between breaks a group,
+    // so Red's 3rd pick and 4th pick are never highlighted at once.
+    // =========================================================
+
+    let start = turnIndex;
+    while(start > 0 && flow[start - 1].type === 'pick' && flow[start - 1].team === turn){
+        start--;
+    }
+
+    let end = turnIndex;
+    while(end + 1 < flow.length && flow[end + 1].type === 'pick' && flow[end + 1].team === turn){
+        end++;
+    }
+
+
+    // =========================================================
+    // COUNT PREVIOUS PICKS FOR THIS TEAM (bans don't count)
+    // =========================================================
+
+    const previousTeamPicks = flow
+        .slice(0, start)
+        .filter(s => s.type === 'pick' && s.team === turn)
+        .length;
+
+    const groupSize = end - start + 1;
+
+
+    // =========================================================
+    // ACTIVATE ALL PLAYERS IN CURRENT GROUP
+    // =========================================================
+
+    for(let i = 0; i < groupSize; i++){
+        const playerIndex = previousTeamPicks + i;
+        if(playerIndex >= 5) continue;
+
+        const playerSlot = document.getElementById(`${turn}-player-slot-${playerIndex}`);
+        if(playerSlot){
+            playerSlot.classList.add('active');
         }
     }
 }
 
 function renderTurn(){
-    const turn = currentTurnTeam();
+    const step = state.phase === 'drafting' ? currentStep() : null;
+    const turn = step ? step.team : null;
+    const isBan = !!step && step.type === 'ban';
+
     document.getElementById('turnA')?.classList.toggle('active', turn === 'a');
     document.getElementById('turnB')?.classList.toggle('active', turn === 'b');
     document.body.classList.toggle('turn-blue', turn === 'a');
     document.body.classList.toggle('turn-red', turn === 'b');
+    document.body.classList.toggle('ban-phase', isBan);
+    setText('turnLabel', isBan ? 'HERO BAN' : 'PLAYER PICK');
 }
 
 function renderFeatured(){
@@ -1051,6 +1368,8 @@ function renderFeatured(){
     const heroCard = cardStage ? cardStage.querySelector('.stage-hero-card') : null;
 
     if(!state.selectedHero){
+        setText('featuredLabel', 'LAST PICK');
+        cardStage?.classList.remove('is-ban');
         if(img){ img.removeAttribute('src'); img.style.display = 'none'; }
         if(name) name.textContent = '—';
         if(status) status.innerHTML = state.phase === 'setup' ? 'WAITING TO START' : 'WAITING FOR PICK';
@@ -1072,28 +1391,27 @@ function renderFeatured(){
         heroCard.classList.add('pop-in');
     }
 
-    let playerName = 'PLAYER', teamName = '', teamClass = '';
-    const indexA = state.currentDraft.picksA.indexOf(hero);
-    const indexB = state.currentDraft.picksB.indexOf(hero);
+    let playerName = 'PLAYER', teamName = '', teamClass = '', isBan = false;
+    const d = state.currentDraft;
+    const indexA = d.picksA.indexOf(hero);
+    const indexB = d.picksB.indexOf(hero);
+    const banIndexA = (d.bansA||[]).indexOf(hero);
+    const banIndexB = (d.bansB||[]).indexOf(hero);
 
     if(indexA !== -1){ playerName = allPlayers('a')[indexA]?.name || `PLAYER ${indexA+1}`; teamName = state.teams.a.name; teamClass = 'blue'; }
     else if(indexB !== -1){ playerName = allPlayers('b')[indexB]?.name || `PLAYER ${indexB+1}`; teamName = state.teams.b.name; teamClass = 'red'; }
+    else if(banIndexA !== -1){ isBan = true; playerName = `BAN ${banIndexA+1}`; teamName = state.teams.a.name; teamClass = 'blue'; }
+    else if(banIndexB !== -1){ isBan = true; playerName = `BAN ${banIndexB+1}`; teamName = state.teams.b.name; teamClass = 'red'; }
+
+    setText('featuredLabel', isBan ? 'LAST BAN' : 'LAST PICK');
 
     // Drive the whole 3D stage's accent theme (halo, ring, pedestal trim,
-    // card frame) from a single class on #cardStage.
+    // card frame) from a single class on #cardStage. `is-ban` greys the art
+    // and strikes it through in red.
     if(cardStage){
         cardStage.classList.remove('active-team-blue','active-team-red');
         if(teamClass) cardStage.classList.add(`active-team-${teamClass}`);
-    }
-
-    // Tag the info overlay with the same team class as #cardStage, so the
-    // hero title's glow reflects who actually picked this hero — not
-    // whichever team's turn it currently is (those can differ once the
-    // turn has advanced past this pick).
-    const infoOverlay = document.querySelector('.hero-info-overlay');
-    if(infoOverlay){
-        infoOverlay.classList.remove('team-blue','team-red');
-        if(teamClass) infoOverlay.classList.add(`team-${teamClass}`);
+        cardStage.classList.toggle('is-ban', isBan);
     }
 
     if(name){
@@ -1106,8 +1424,9 @@ function renderFeatured(){
     if(status){
         status.innerHTML = `
             <span class="team-badge ${teamClass}">${escapeHtml(teamName)}</span>
-            <span class="role-badge">${escapeHtml(getRole(hero))}</span>
-            <span class="lane-badge">${escapeHtml(getLane(hero))}</span>
+            ${isBan ? '<span class="ban-badge">BANNED</span>' : ''}
+            <span class="role-badge">${escapeHtml(getRoles(hero))}</span>
+            <span class="lane-badge">${escapeHtml(getLanes(hero))}</span>
         `;
     }
 
@@ -1201,23 +1520,116 @@ function renderFearlessPanels(){
     if(containerB) lockedB.forEach(h => containerB.appendChild(makeIcon(h, state.teams.b.name)));
 }
 
+/* -------------------------------------------------------------------------
+   MANUAL BAN SLOTS + PHASE TRACK
+   Shared by operator & viewer. Every element lookup is guarded, so a viewer
+   page without the ban bar markup simply skips this.
+------------------------------------------------------------------------- */
+const renderedBans = { a:[], b:[] };   // remembers what was drawn so only NEW bans animate
+
+function renderBans(){
+    const hasBans = state.banCount > 0;
+    document.getElementById('stage')?.classList.toggle('has-bans', hasBans);
+    document.getElementById('viewerStage')?.classList.toggle('has-bans', hasBans);
+    document.getElementById('banLegend')?.classList.toggle('hidden', !hasBans);
+
+    const step = state.phase === 'drafting' ? currentStep() : null;
+
+    ['a','b'].forEach(team=>{
+        const wrap = document.getElementById(team === 'a' ? 'banSlotsA' : 'banSlotsB');
+        if(!wrap) return;
+        wrap.innerHTML = '';
+
+        const bans = (team === 'a' ? state.currentDraft.bansA : state.currentDraft.bansB) || [];
+        const teamName = state.teams[team].name;
+
+        for(let i = 0; i < state.banCount; i++){
+            const slot = document.createElement('div');
+            slot.className = 'ban-slot';
+            const hero = bans[i];
+
+            if(hero === SKIP_TOKEN){
+                slot.classList.add('skipped');
+                slot.innerHTML = '<span class="ban-slot-skip">—</span>';
+                slot.title = 'NO BAN';
+            }
+            else if(hero){
+                slot.classList.add('filled');
+                slot.title = `${hero} — BANNED by ${teamName}`;
+                const img = document.createElement('img');
+                img.alt = hero;
+                loadHeroImage(img, hero, ['icon','portrait','splash']);
+                const strike = document.createElement('span');
+                strike.className = 'ban-slot-x';
+                slot.appendChild(img);
+                slot.appendChild(strike);
+                if(renderedBans[team][i] !== hero) slot.classList.add('drop');
+            }
+            else{
+                slot.innerHTML = `<span class="ban-slot-n">${i + 1}</span>`;
+                if(step && step.type === 'ban' && step.team === team && i === bans.length){
+                    slot.classList.add('active');
+                }
+            }
+            wrap.appendChild(slot);
+        }
+        renderedBans[team] = bans.slice();
+    });
+}
+
+function renderPhaseTrack(){
+    const el = document.getElementById('phaseTrack');
+    if(!el) return;
+    el.innerHTML = '';
+
+    const flow = getFlow();
+    const segs = [];
+    flow.forEach((s, i)=>{
+        const last = segs[segs.length - 1];
+        if(last && last.type === s.type && last.phase === s.phase) last.end = i;
+        else segs.push({ type:s.type, phase:s.phase, start:i, end:i });
+    });
+
+    const multi = {
+        ban:  segs.filter(s => s.type === 'ban').length  > 1,
+        pick: segs.filter(s => s.type === 'pick').length > 1
+    };
+
+    const cur = state.phase === 'drafting'
+        ? state.currentDraft.turnIndex
+        : (state.phase === 'setup' ? -1 : flow.length);
+
+    segs.forEach(seg=>{
+        const chip = document.createElement('div');
+        chip.className = 'phase-chip ' + seg.type;
+        if(cur > seg.end) chip.classList.add('done');
+        else if(cur >= seg.start) chip.classList.add('active');
+        chip.textContent = seg.type.toUpperCase() + (multi[seg.type] ? ` ${seg.phase}` : '');
+        el.appendChild(chip);
+    });
+}
+
 function renderPickHistory(){
     const list = document.getElementById('pickHistoryList');
     if(!list) return;
     list.innerHTML = '';
 
+    const d = state.currentDraft;
     const rows = [];
-    state.currentDraft.picksA.forEach(()=>{});
-    let ai = 0, bi = 0;
-    state.sequence.forEach((team, i)=>{
-        const bucket = team === 'a' ? state.currentDraft.picksA : state.currentDraft.picksB;
-        const seenSoFar = team === 'a' ? ai : bi;
-        if(seenSoFar < bucket.length){
-            const hero = bucket[seenSoFar];
-            const playerIdx = seenSoFar;
-            const player = allPlayers(team)[playerIdx];
-            rows.push({ n: i+1, team, hero, player: player ? player.name : '' });
-            if(team === 'a') ai++; else bi++;
+    const counts = { pick:{ a:0, b:0 }, ban:{ a:0, b:0 } };
+
+    getFlow().forEach((step, i)=>{
+        const bucket = step.type === 'ban'
+            ? (step.team === 'a' ? d.bansA : d.bansB)
+            : (step.team === 'a' ? d.picksA : d.picksB);
+        const idx = counts[step.type][step.team];
+        if(idx < bucket.length){
+            const player = step.type === 'pick' ? allPlayers(step.team)[idx] : null;
+            rows.push({
+                n: i + 1, team: step.team, type: step.type, hero: bucket[idx],
+                player: step.type === 'ban' ? 'BAN' : (player ? player.name : '')
+            });
+            counts[step.type][step.team]++;
         }
     });
 
@@ -1228,8 +1640,8 @@ function renderPickHistory(){
 
     rows.forEach(r=>{
         const row = document.createElement('div');
-        row.className = 'pick-history-row ' + (r.team === 'a' ? 'blue' : 'red');
-        const heroLabel = r.hero === SKIP_TOKEN ? 'SKIPPED' : escapeHtml(r.hero);
+        row.className = 'pick-history-row ' + (r.team === 'a' ? 'blue' : 'red') + (r.type === 'ban' ? ' ban' : '');
+        const heroLabel = r.hero === SKIP_TOKEN ? (r.type === 'ban' ? 'NO BAN' : 'SKIPPED') : escapeHtml(r.hero);
         row.innerHTML = `
             <span class="pick-n">#${r.n}</span>
             <span class="pick-team">${r.team === 'a' ? escapeHtml(state.teams.a.name) : escapeHtml(state.teams.b.name)}</span>
@@ -1243,7 +1655,7 @@ function renderPickHistory(){
 
 function renderProgress(){
     const current = state.currentDraft.turnIndex;
-    const total = state.sequence.length;
+    const total = getFlow().length;
     setText('progressText', `GAME ${state.currentGameIndex} • DRAFT ${current} / ${total}`);
     const fill = document.getElementById('progressFill');
     if(fill) fill.style.width = `${(current / total) * 100}%`;
@@ -1273,10 +1685,6 @@ function renderPhaseUI(){
         overlay?.classList.remove('team-blue','team-red');
         overlay?.classList.add(winner === 'a' ? 'team-blue' : 'team-red');
     }
-
-    if(VIEW === 'operator' && resultPanel && state.phase === 'game_complete'){
-        resultPanel.scrollIntoView?.({ behavior:'smooth', block:'nearest' });
-    }
 }
 
 
@@ -1294,9 +1702,9 @@ function renderHeroGrid(){
     const heroesToShow = HEROES.filter(hero=>{
         if(local.searchQuery && !hero.toLowerCase().includes(local.searchQuery)) return false;
         if(local.filterMode === 'lane'){
-            if(local.laneFilter !== 'ALL' && getLane(hero) !== local.laneFilter) return false;
+            if(local.laneFilter !== 'ALL' && !hasLane(hero, local.laneFilter)) return false;
         } else {
-            if(local.roleFilter !== 'ALL' && getRole(hero) !== local.roleFilter) return false;
+            if(local.roleFilter !== 'ALL' && !hasRole(hero, local.roleFilter)) return false;
         }
         return true;
     });
@@ -1307,16 +1715,18 @@ function renderHeroGrid(){
     heroesToShow.forEach(hero=>{
         const fearlessLocked = lockedSet.has(hero);
         const pickedThisGame = state.currentDraft.picksA.includes(hero) || state.currentDraft.picksB.includes(hero);
-        const locked = fearlessLocked || pickedThisGame;
+        const banned = isHeroBanned(hero);
+        const locked = fearlessLocked || pickedThisGame || banned;
 
         const card = document.createElement('button');
         card.type = 'button';
         card.className = 'hero-card';
-        card.dataset.role = getRole(hero);
-        card.dataset.lane = getLane(hero);
+        card.dataset.role = getRoles(hero).join(',');
+        card.dataset.lane = getLanes(hero).join(',');
         if(locked) card.classList.add('hero-locked');
         if(pickedThisGame) card.classList.add('hero-picked');
         if(fearlessLocked) card.classList.add('hero-fearless');
+        if(banned) card.classList.add('hero-banned');
 
         const img = document.createElement('img');
         loadHeroImage(img, hero, ['icon','portrait','splash']);
@@ -1333,12 +1743,17 @@ function renderHeroGrid(){
             lock.textContent = '🔒';
             card.appendChild(lock);
         }
+        if(banned){
+            const mark = document.createElement('div');
+            mark.className = 'hero-ban-mark';
+            card.appendChild(mark);
+        }
 
         card.addEventListener('mouseenter', ()=> showHeroPreview(hero, card));
         card.addEventListener('mouseleave', hideHeroPreview);
 
         card.onclick = ()=>{
-            if(locked){ showToast(`${hero} is unavailable`); return; }
+            if(locked){ showToast(heroUnavailableReason(hero)); return; }
             pickHero(hero);
         };
 
@@ -1353,7 +1768,7 @@ function showHeroPreview(hero, card){
     const img = preview.querySelector('img');
     loadHeroImage(img, hero, ['portrait','splash','icon']);
     preview.querySelector('.hp-name').textContent = hero;
-    preview.querySelector('.hp-role').textContent = `${getRole(hero)} • ${getLane(hero)}`;
+    preview.querySelector('.hp-role').textContent = `${getRoles(hero)} • ${getLanes(hero)}`;
     const rect = card.getBoundingClientRect();
     preview.style.left = Math.min(window.innerWidth - 190, rect.left) + 'px';
     preview.style.top = (rect.top - 210) + 'px';
@@ -1386,6 +1801,14 @@ function renderMatchHistory(){
             }).join('');
         }
 
+        function banRow(bans){
+            const list = (bans || []).filter(h => h && h !== SKIP_TOKEN);
+            if(!list.length) return '';
+            return `<div class="history-bans"><em>BANS</em>${list.map(h =>
+                `<span class="history-chip ban" data-hero="${escapeHtml(h)}"><img alt=""><span>${escapeHtml(h)}</span></span>`
+            ).join('')}</div>`;
+        }
+
         const winnerLabel = game.winner
             ? (game.winner === 'a' ? escapeHtml(state.teams.a.name) : escapeHtml(state.teams.b.name))
             : 'PENDING';
@@ -1397,8 +1820,8 @@ function renderMatchHistory(){
                 <button type="button" class="control-btn danger tiny" data-action="delete-game" data-game="${game.index}">DELETE</button>
             </div>
             <div class="history-game-body">
-                <div class="history-team blue"><span>${escapeHtml(state.teams.a.name)}</span><div class="history-chips">${chips(game.picksA,'a')}</div></div>
-                <div class="history-team red"><span>${escapeHtml(state.teams.b.name)}</span><div class="history-chips">${chips(game.picksB,'b')}</div></div>
+                <div class="history-team blue"><span>${escapeHtml(state.teams.a.name)}</span><div class="history-chips">${chips(game.picksA,'a')}</div>${banRow(game.bansA)}</div>
+                <div class="history-team red"><span>${escapeHtml(state.teams.b.name)}</span><div class="history-chips">${chips(game.picksB,'b')}</div>${banRow(game.bansB)}</div>
             </div>
         `;
         list.appendChild(card);
@@ -1488,6 +1911,8 @@ function collectSetupData(){
     const format = document.getElementById('format').value;
     const maxGames = { bo1:1, bo3:3, bo5:5, bo7:7 }[format] || 3;
     const timerMax = Number(document.getElementById('timerSeconds').value) || 30;
+    const rawBans = Number(document.getElementById('banCount')?.value);
+    const banCount = [0,3,5].includes(rawBans) ? rawBans : 5;
 
     return {
         meta:{
@@ -1496,7 +1921,7 @@ function collectSetupData(){
             matchName: document.getElementById('matchName').value.trim() || 'GRAND FINALS'
         },
         teams: { a: teamA, b: teamB },
-        format, maxGames, timerMax
+        format, maxGames, timerMax, banCount
     };
 }
 
