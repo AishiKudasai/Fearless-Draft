@@ -18,18 +18,13 @@
     <div class="setup-card">
 
         <div class="setup-title">FEARLESS DRAFT</div>
-        <div class="setup-sub">MLBB TOURNAMENT DRAFT SYSTEM — OPERATOR CONSOLE</div>
+        <div class="setup-sub">MLBB TOURNAMENT DRAFT SYSTEM</div>
 
         <div class="setup-section">
             <div class="setup-section-title">TOURNAMENT</div>
             <div class="setup-tournament-grid">
                 <input id="tournamentName" class="setup-input" value="MLBB CHAMPIONSHIP SERIES" placeholder="Tournament name">
                 <input id="matchName" class="setup-input" value="GRAND FINALS" placeholder="Match name (e.g. Grand Finals)">
-                <label class="logo-upload">
-                    <img id="setupTournamentLogoPreview" class="logo-preview" alt="" style="display:none;">
-                    <span>+ TOURNAMENT LOGO</span>
-                    <input id="tournamentLogoInput" type="file" accept="image/*" hidden>
-                </label>
             </div>
         </div>
 
@@ -38,22 +33,12 @@
             <div class="setup-team blue">
                 <h3>BLUE TEAM</h3>
                 <input id="teamA" class="setup-input" value="BLUE TEAM" placeholder="Team name">
-                <label class="logo-upload small">
-                    <img id="setupTeamLogoPreviewA" class="logo-preview" alt="" style="display:none;">
-                    <span>+ TEAM LOGO</span>
-                    <input id="teamLogoInputA" type="file" accept="image/*" hidden>
-                </label>
                 <div id="setupPlayersA" class="setup-player-list"></div>
             </div>
 
             <div class="setup-team red">
                 <h3>RED TEAM</h3>
                 <input id="teamB" class="setup-input" value="RED TEAM" placeholder="Team name">
-                <label class="logo-upload small">
-                    <img id="setupTeamLogoPreviewB" class="logo-preview" alt="" style="display:none;">
-                    <span>+ TEAM LOGO</span>
-                    <input id="teamLogoInputB" type="file" accept="image/*" hidden>
-                </label>
                 <div id="setupPlayersB" class="setup-player-list"></div>
             </div>
 
@@ -81,6 +66,15 @@
                     <option value="60">60 SECONDS</option>
                 </select>
             </div>
+            <div class="option-box">
+                <label>HERO BANS (PER TEAM)</label>
+                <select id="banCount">
+                    <option value="5">5 BANS (3 + 2)</option>
+                    <option value="3" selected>3 BANS</option>
+                    <option value="0">NO BANS</option>
+                </select>
+                <div class="option-hint">Manual bans reset every game. Fearless locks (heroes picked in earlier games) always stay locked.</div>
+            </div>
         </div>
 
         <button id="startDraftBtn" class="start-btn">START FEARLESS DRAFT</button>
@@ -97,13 +91,11 @@
 
 <header class="topbar">
     <div class="team-score blue">
-        <img id="teamLogoA" class="team-logo" alt="" style="display:none;">
         <span id="displayTeamA">BLUE TEAM</span>
         <span class="score-number" id="scoreA">0</span>
     </div>
 
     <div class="center-score">
-        <img id="tournamentLogo" class="center-score-logo" alt="" style="display:none;">
         <div id="seriesLabel" class="series-label">BO3</div>
         <div id="timer" class="timer">30</div>
         <div id="gameProgress" class="game-progress">GAME 1 OF 3</div>
@@ -112,9 +104,21 @@
     <div class="team-score red">
         <span class="score-number" id="scoreB">0</span>
         <span id="displayTeamB">RED TEAM</span>
-        <img id="teamLogoB" class="team-logo" alt="" style="display:none;">
     </div>
 </header>
+
+    <!-- MANUAL BAN BAR (MLBB style: blue bans left, red bans right, phase in the middle) -->
+    <div id="banBar" class="ban-bar">
+        <div class="ban-side blue">
+            <span class="ban-side-label">BANS</span>
+            <div id="banSlotsA" class="ban-slots"></div>
+        </div>
+        <div id="phaseTrack" class="phase-track"></div>
+        <div class="ban-side red">
+            <div id="banSlotsB" class="ban-slots"></div>
+            <span class="ban-side-label">BANS</span>
+        </div>
+    </div>
 
     <section class="main">
 
@@ -134,7 +138,7 @@
 
                 <div class="turnbar">
                     <div id="turnA" class="turn-team blue">BLUE</div>
-                    <div>PLAYER PICK</div>
+                    <div id="turnLabel">PLAYER PICK</div>
                     <div id="turnB" class="turn-team red">RED TEAM</div>
                 </div>
 
@@ -179,7 +183,7 @@
                     </div>
 
                     <div class="hero-info-overlay">
-                        <div class="featured-small">LAST PICK</div>
+                        <div id="featuredLabel" class="featured-small">LAST PICK</div>
                         <div id="featuredName" class="featured-name">—</div>
                         <div id="featuredStatus" class="featured-status">WAITING FOR PICK</div>
                     </div>
@@ -255,6 +259,10 @@
                 <div class="hero-area">
                     <div class="available-title">
                         <span>AVAILABLE HEROES</span>
+                        <span class="hero-legend">
+                            <span class="legend-item"><i class="legend-lock">🔒</i>FEARLESS LOCKED</span>
+                            <span id="banLegend" class="legend-item"><i class="legend-ban"></i>BANNED</span>
+                        </span>
                         <span id="availableCount" style="margin-left:auto">0</span>
                     </div>
                     <div id="heroGrid" class="hero-grid"></div>
@@ -345,4 +353,4 @@
 <div id="toast"></div>
 <script src="script.js"></script>
 </body>
-</html>
+     </html>
